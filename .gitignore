@@ -1,0 +1,20 @@
+# Rust
+src-tauri/target/
+
+# Node
+node_modules/
+package-lock.json
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Tauri auto-generated (mobile targets, etc.)
+src-tauri/gen/android/
+src-tauri/gen/apple/
+
+# Updater private key — NEVER commit
+src-tauri/.tauri-updater-key
