@@ -14,19 +14,19 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-macos:
-    name: macOS (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
+  build:
+    name: Build (${{ matrix.platform }})
+    runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - arch: aarch64
-            runner: macos-latest
+          - platform: macos-latest
             target: aarch64-apple-darwin
-          - arch: x86_64
-            runner: macos-13
+          - platform: macos-13
             target: x86_64-apple-darwin
+          - platform: windows-latest
+            target: x86_64-pc-windows-msvc
 
     steps:
       - uses: actions/checkout@v4
