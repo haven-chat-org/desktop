@@ -5,6 +5,8 @@ use tauri::{
     Listener, Manager,
 };
 use tauri_plugin_decorum::WebviewWindowExt;
+#[cfg(any(target_os = "linux", windows))]
+use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_plugin_log::{Target, TargetKind, RotationStrategy, TimezoneStrategy};
 
 #[cfg(target_os = "macos")]
@@ -25,6 +27,7 @@ pub fn run() {
     }
 
     builder
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_decorum::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_notification::init())
@@ -45,6 +48,13 @@ pub fn run() {
         )
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
+            // Register haven:// scheme on Windows/Linux at runtime.
+            // macOS handles this automatically via the bundle Info.plist.
+            #[cfg(any(target_os = "linux", windows))]
+            {
+                app.deep_link().register_all()?;
+            }
+
             // Create overlay titlebar: on Windows this hides decorations and injects
             // min/max/close buttons; on macOS it's a no-op since decorations:true
             let main_window = app.get_webview_window("main").unwrap();

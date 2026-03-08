@@ -26,6 +26,7 @@
     "os:default",
     "decorum:allow-show-snap-overlay",
     "log:default",
-    "opener:allow-reveal-item-in-dir"
+    "opener:allow-reveal-item-in-dir",
+    "deep-link:default"
   ]
 }
