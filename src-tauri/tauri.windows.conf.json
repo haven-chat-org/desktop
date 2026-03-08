@@ -1,0 +1,20 @@
+{
+  "app": {
+    "windows": [
+      {
+        "decorations": false
+      }
+    ]
+  },
+  "bundle": {
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false
+      },
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
+  }
+}

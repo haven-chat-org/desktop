@@ -24,7 +24,7 @@
     ],
     "security": {
       "capabilities": ["default"],
-      "csp": "default-src 'self'; connect-src 'self' http: https: ws: wss:; img-src 'self' http: https: data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
+      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost http: https: ws: wss:; img-src 'self' http: https: data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; media-src 'self' blob:"
     }
   },
   "bundle": {
