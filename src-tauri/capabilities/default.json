@@ -21,6 +21,8 @@
     "updater:default",
     "process:allow-restart",
     "os:default",
-    "decorum:allow-show-snap-overlay"
+    "decorum:allow-show-snap-overlay",
+    "log:default",
+    "opener:allow-reveal-item-in-dir"
   ]
 }

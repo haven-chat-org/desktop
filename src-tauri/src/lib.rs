@@ -1,5 +1,6 @@
 use tauri::Manager;
 use tauri_plugin_decorum::WebviewWindowExt;
+use tauri_plugin_log::{Target, TargetKind, RotationStrategy, TimezoneStrategy};
 
 #[cfg(target_os = "macos")]
 use tauri::menu::{MenuBuilder, PredefinedMenuItem, SubmenuBuilder};
@@ -25,6 +26,19 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .level(log::LevelFilter::Warn)
+                .targets([
+                    Target::new(TargetKind::LogDir { file_name: Some("haven".into()) }),
+                    Target::new(TargetKind::Stdout),
+                ])
+                .max_file_size(5_000_000) // 5MB per file
+                .rotation_strategy(RotationStrategy::KeepAll)
+                .timezone_strategy(TimezoneStrategy::UseLocal)
+                .build(),
+        )
+        .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             // Create overlay titlebar: on Windows this hides decorations and injects
             // min/max/close buttons; on macOS it's a no-op since decorations:true
