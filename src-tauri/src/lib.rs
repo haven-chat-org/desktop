@@ -1,4 +1,9 @@
-use tauri::Manager;
+use tauri::{
+    image::Image,
+    menu::{Menu, MenuItem},
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    Listener, Manager,
+};
 use tauri_plugin_decorum::WebviewWindowExt;
 use tauri_plugin_log::{Target, TargetKind, RotationStrategy, TimezoneStrategy};
 
@@ -87,7 +92,67 @@ pub fn run() {
                 app.set_menu(menu)?;
             }
 
+            // --- System tray ---
+            let show_item = MenuItem::with_id(app, "show", "Show Haven", true, None::<&str>)?;
+            let quit_item = MenuItem::with_id(app, "quit", "Quit Haven", true, None::<&str>)?;
+            let tray_menu = Menu::with_items(app, &[&show_item, &quit_item])?;
+
+            let tray = TrayIconBuilder::new()
+                .icon(Image::from_bytes(include_bytes!("../icons/tray-default.png"))?)
+                .menu(&tray_menu)
+                .show_menu_on_left_click(false)
+                .tooltip("Haven")
+                .on_menu_event(|app, event| match event.id.as_ref() {
+                    "show" => {
+                        if let Some(w) = app.get_webview_window("main") {
+                            let _ = w.show();
+                            let _ = w.unminimize();
+                            let _ = w.set_focus();
+                        }
+                    }
+                    "quit" => {
+                        app.exit(0);
+                    }
+                    _ => {}
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } = event
+                    {
+                        let app = tray.app_handle();
+                        if let Some(w) = app.get_webview_window("main") {
+                            let _ = w.show();
+                            let _ = w.unminimize();
+                            let _ = w.set_focus();
+                        }
+                    }
+                })
+                .build(app)?;
+
+            // Listen for unread state changes from the frontend
+            let tray_handle = tray.clone();
+            app.listen("tray-unread-changed", move |event: tauri::Event| {
+                let has_unread: bool = serde_json::from_str(event.payload()).unwrap_or(false);
+                let icon_bytes: &[u8] = if has_unread {
+                    include_bytes!("../icons/tray-unread.png")
+                } else {
+                    include_bytes!("../icons/tray-default.png")
+                };
+                if let Ok(icon) = Image::from_bytes(icon_bytes) {
+                    let _ = tray_handle.set_icon(Some(icon));
+                }
+            });
+
             Ok(())
+        })
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                api.prevent_close();
+                let _ = window.hide();
+            }
         })
         .run(tauri::generate_context!())
         .expect("error while running Haven desktop");
