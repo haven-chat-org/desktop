@@ -43,8 +43,13 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "",
-      "endpoints": []
+      "pubkey": "REPLACE_WITH_GENERATED_PUBKEY",
+      "endpoints": [
+        "https://github.com/haven-chat-org/desktop/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }
