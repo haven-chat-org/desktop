@@ -30,12 +30,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout web frontend
-        uses: actions/checkout@v4
-        with:
-          repository: haven-chat-org/web
-          path: web
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -48,9 +42,13 @@ jobs:
         with:
           workspaces: src-tauri
 
-      - name: Install web dependencies
-        working-directory: web
-        run: npm ci
+      - name: Download pre-built web frontend
+        shell: bash
+        run: |
+          mkdir -p ../web/dist
+          curl -fSL https://github.com/haven-chat-org/web/releases/latest/download/web-dist.tar.gz \
+            -o /tmp/web-dist.tar.gz
+          tar -xzf /tmp/web-dist.tar.gz -C ../web/dist
 
       - name: Install desktop dependencies
         run: npm ci
@@ -67,4 +65,5 @@ jobs:
           releaseBody: "See the assets below to download and install Haven Desktop."
           releaseDraft: false
           prerelease: false
-          args: --target ${{ matrix.target }}
+          tauriScript: npx tauri
+          args: --target ${{ matrix.target }} --config '{"build":{"beforeBuildCommand":""}}'
