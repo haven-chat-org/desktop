@@ -47,6 +47,11 @@ pub fn run() {
                 .build(),
         )
         .plugin(tauri_plugin_opener::init())
+        .plugin(
+            tauri_plugin_autostart::Builder::new()
+                .args(["--minimized"])
+                .build(),
+        )
         .setup(|app| {
             // Register haven:// scheme on Windows/Linux at runtime.
             // macOS handles this automatically via the bundle Info.plist.
@@ -59,6 +64,12 @@ pub fn run() {
             // min/max/close buttons; on macOS it's a no-op since decorations:true
             let main_window = app.get_webview_window("main").unwrap();
             main_window.create_overlay_titlebar().unwrap();
+
+            // Show window only on normal launch (not auto-started with --minimized)
+            let start_minimized = std::env::args().any(|a| a == "--minimized");
+            if !start_minimized {
+                let _ = main_window.show();
+            }
 
             // --- macOS application menu ---
             #[cfg(target_os = "macos")]
