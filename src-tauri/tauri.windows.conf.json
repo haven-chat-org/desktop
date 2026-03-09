@@ -8,7 +8,6 @@
   },
   "bundle": {
     "windows": {
-      "signCommand": "trusted-signing-cli -e https://wus2.codesigning.azure.net -a HavenChat -c HavenChatProfile -d \"Haven Chat\" %1",
       "nsis": {
         "installMode": "currentUser",
         "displayLanguageSelector": false
