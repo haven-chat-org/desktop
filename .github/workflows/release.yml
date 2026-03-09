@@ -1,10 +1,9 @@
 name: Build & Release
 
 on:
-  # Disabled while repo is private / desktop is pre-release
-  # push:
-  #   tags:
-  #     - "v*"
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
 
 permissions:
