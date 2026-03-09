@@ -19,12 +19,13 @@
         "minHeight": 560,
         "decorations": true,
         "titleBarStyle": "Overlay",
-        "hiddenTitle": true
+        "hiddenTitle": true,
+        "visible": false
       }
     ],
     "security": {
       "capabilities": ["default"],
-      "csp": "default-src 'self'; connect-src 'self' http: https: ws: wss:; img-src 'self' http: https: data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
+      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost http: https: ws: wss:; img-src 'self' http: https: data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; media-src 'self' blob:"
     }
   },
   "bundle": {
@@ -42,9 +43,19 @@
     }
   },
   "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["haven"]
+      }
+    },
     "updater": {
-      "pubkey": "",
-      "endpoints": []
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDlCMkM1ODMzNzQzMjIzRjQKUldUMEl6SjBNMWdzbStwQ0k4WCs4VmRPYm9JZmNiekFKYU1RVDI4UkxTVEtNQWo4Z0FaUStCU2UK",
+      "endpoints": [
+        "https://github.com/haven-chat-org/desktop/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }
